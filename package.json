@@ -5,11 +5,11 @@
   "main": "./src/index.js",
   "dependencies": {
     "chinese-lunar": "^0.1.4",
-    "node-constellation": "^0.0.5",
-    "webpack": "^5.9.0"
+    "node-constellation": "^0.0.5"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
+    "webpack": "^5.9.0",
     "webpack-cli": "^4.2.0"
   },
   "scripts": {
