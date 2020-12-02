@@ -3,12 +3,12 @@ const chineseLunar = require('chinese-lunar');
 //
 const dataAddress = require('./data/address.json');
 //
-const weekDay = require('./utils/week')
+const weekDay = require('./utils/week');
 // 身份证正则
 const { eReg, eReg15_0, eReg15_1, eReg18_0, eReg18_1 } = require('./utils/reg');
 //
 export default class JsIdCard {
-  constructor(idCard) {}
+  constructor() {}
   // 星期
   week(year, month, date) {
     return weekDay(year, month, date)
@@ -50,14 +50,14 @@ export default class JsIdCard {
   }
   // 农历转换
   Nong(birday) {
-    const bir = birday.split(/[\/\\\-]/)
-    const birthday = bir.slice(0, 4) + '/' + bir.slice(4, 6) + '/' + bir.slice(6, 8)
-    const nong = new Date(birthday)
+    const bir = birday.split(/[\/\\\-]/);
+    const birthday = bir.slice(0, 4) + '/' + bir.slice(4, 6) + '/' + bir.slice(6, 8);
+    const nong = new Date(birthday);
     try {
-      const lunar = chineseLunar.solarToLunar(nong)
-      return lunar.year + '/' + lunar.month + '/' + lunar.day
+      const lunar = chineseLunar.solarToLunar(nong);
+      return lunar.year + '/' + lunar.month + '/' + lunar.day;
     } catch (err) {
-      return '时间错误'
+      return '时间错误';
     }
   }
   // 解析生日信息
@@ -134,11 +134,11 @@ export default class JsIdCard {
   }
   // 性别解析
   sex(idCard) {
-    idCard = idCard.toString()
-    if (idCard.length === 15) {
-      idCard = this.num15to18(idCard)
+    let IdCard = idCard.toString();
+    if (IdCard.length === 15) {
+      IdCard = this.num15to18(IdCard);
     }
-    if (idCard[16] % 2) return '男';
-    return '女'
+    if (IdCard[16] % 2) return '男';
+    return '女';
   }
 }
