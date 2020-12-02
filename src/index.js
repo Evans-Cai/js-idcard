@@ -131,7 +131,7 @@ export default class JsIdCard {
    * 地址信息返回格式
    * @return {object} {"address": "地址","provinces": "省/直辖市","citiy": "市","areas": "县/区","all": "省-市-县"}
    **/
-  address(idCard) {
+  address_zh(idCard) {
     try {
       const IdCard = idCard.toString();
       const _addressId = IdCard.slice(0, 6);
@@ -166,7 +166,7 @@ export default class JsIdCard {
       repairIdCard: this.repairIdCard(idCard),
       num15to18: this.num15to18(idCard),
       sex: this.sex(idCard),
-      address: this.address(idCard),
+      address_zh: this.address_zh(idCard),
       lunar: this.lunarCalendar(idCard)
     }
   }
