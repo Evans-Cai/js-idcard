@@ -1,0 +1,32 @@
+{
+  "name": "js-idcard",
+  "version": "1.0.7",
+  "description": "身份证解析",
+  "main": "idCard.js",
+  "dependencies": {
+    "chinese-lunar": "^0.1.4",
+    "node-constellation": "^0.0.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NoBey/IdCard.git"
+  },
+  "keywords": [
+    "身份证",
+    "id-card"
+  ],
+  "author": "NoBey",
+  "contributors": [
+    "NoBey",
+    "Labi Kyo <labikyo@gmail.com> (github.com/labikyo)"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NoBey/IdCard/issues"
+  },
+  "homepage": "https://github.com/NoBey/IdCard#readme"
+}
