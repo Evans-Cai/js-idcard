@@ -64,7 +64,8 @@ export default class JsIdCard {
       const _lunar = chineseLunar.solarToLunar(_dateTime);
       return _lunar.year + '/' + _lunar.month + '/' + _lunar.day;
     } catch (err) {
-      return '时间错误';
+      console.error('error => ', err, '时间错误')
+      return null
     }
   }
   // 解析生日信息
