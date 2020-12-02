@@ -2,15 +2,23 @@
 ----
 
 ## 安装
-`npm install js-idcard`
+###### yarn
+`yarn add js-idcard-full -S`
+###### npm
+`npm install js-idcard-full -S`
 
 ## 使用
 ```
-const IdCard = require('js-idcard')
+# require
+const IdCard = require('js-idcard-full') 
+# import
+import JsIdCardFull = require('js-idcard-full')
 ```
 
-## 方法列表
+####方法列表
+
 ----
+
 ### IdCard.EndNum(IdCard)
 返回根据前17位数算出来的第18位
 
