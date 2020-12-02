@@ -1,4 +1,6 @@
-export const weekDay = {
+/**
+ * **/
+const day = {
   0: '星期一',
   1: '星期二',
   2: '星期三',
@@ -6,4 +8,9 @@ export const weekDay = {
   4: '星期五',
   5: '星期六',
   6: '星期天'
+}
+//
+export default function weekDay(year, month, date) {
+  const i = new Date(year, month - 1, date).getUTCDay();
+  return day[i]
 }

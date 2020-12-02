@@ -1,20 +1,22 @@
 {
   "name": "js-idcard",
-  "version": "1.0.7",
+  "version": "2.0.0",
   "description": "身份证解析",
-  "main": "idCard.js",
+  "main": "./src/index.js",
   "dependencies": {
     "chinese-lunar": "^0.1.4",
-    "node-constellation": "^0.0.5"
+    "node-constellation": "^0.0.5",
+    "webpack": "^5.9.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "webpack-cli": "^4.2.0"
+  },
   "scripts": {
+    "build": "webpack --config config/webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NoBey/IdCard.git"
-  },
+  "repository": "git+https://github.com/Evans-Cai/js-idcard.git",
   "keywords": [
     "身份证",
     "id-card"
@@ -22,11 +24,11 @@
   "author": "NoBey",
   "contributors": [
     "NoBey",
-    "Labi Kyo <labikyo@gmail.com> (github.com/labikyo)"
+    "Evans-Cai <caiwendi88@gmail.com> (github.com/Evans-Cai)"
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/NoBey/IdCard/issues"
+    "url": "https://github.com/Evans-Cai/js-idcard/issues"
   },
-  "homepage": "https://github.com/NoBey/IdCard#readme"
+  "homepage": "https://github.com/Evans-Cai/js-idcard#readme"
 }

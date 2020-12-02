@@ -11,4 +11,4 @@ function Nong(ba) {
   return lunar.year + '/' + lunar.month + '/' + lunar.day
 }
 
-module.exports = Nong
+export default Nong
