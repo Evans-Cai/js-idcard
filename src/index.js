@@ -1,2 +1,2 @@
-import JsIdCardFull from './utils'
+import JsIdCardFull from './libs'
 module.exports = JsIdCardFull
