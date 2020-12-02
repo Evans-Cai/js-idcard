@@ -8,10 +8,17 @@ const weekDay = require('./utils/week');
 const { eReg, eReg15_0, eReg15_1, eReg18_0, eReg18_1 } = require('./utils/reg');
 //
 export default class JsIdCard {
-  constructor() {}
+  /**
+   * @param {String|Number} idCard 身份证号
+   * **/
+  constructor(idCard) {
+    if(idCard){
+      return this.all(idCard);
+    }
+  }
   // 星期
-  week(year, month, date) {
-    return weekDay(year, month, date)
+  week_zh(year, month, day) {
+    return weekDay(year, month, day)
   }
   // 生肖
   zodiac_zh(year) {
@@ -21,16 +28,16 @@ export default class JsIdCard {
     return arr[Year]
   }
   // 星座
-  zodiac(month, date) {
+  zodiac(month, day) {
     try {
-      if (month !== undefined && date !== undefined) return NodeConstellation(month, date, 'zh-cn')
-      if (date === undefined && month !== undefined) {
-        if (month.length === 4) return NodeConstellation(month.substr(0, 2), month.substr(2, 2), 'zh-cn')
-        month = month.split(/[\/\\\-]/)
-        return NodeConstellation(month[0], month[1], 'zh-cn')
+      if (month !== undefined && day !== undefined) return NodeConstellation(month, day, 'zh-cn')
+      if (day === undefined && month !== undefined) {
+        if (month.length === 4) return NodeConstellation(month.substr(0, 2), month.substr(2, 2), 'zh-cn');
+        const _month = month.split(/[\/\\\-]/);
+        return NodeConstellation(_month[0], _month[1], 'zh-cn')
       }
     } catch (err) {
-      return '出错' + month + date
+      return '出错 => ' + month + day
     }
   }
   // 计算最后一位应该是多少
@@ -49,36 +56,38 @@ export default class JsIdCard {
     return parity[sum % 11];
   }
   // 农历转换
-  Nong(birday) {
-    const bir = birday.split(/[\/\\\-]/);
-    const birthday = bir.slice(0, 4) + '/' + bir.slice(4, 6) + '/' + bir.slice(6, 8);
-    const nong = new Date(birthday);
+  lunarCalendar(birthday) {
+    const _bir = birthday.split(/[\/\\\-]/);
+    const _birthday = _bir.slice(0, 4) + '/' + _bir.slice(4, 6) + '/' + _bir.slice(6, 8);
+    const _dateTime = new Date(_birthday);
     try {
-      const lunar = chineseLunar.solarToLunar(nong);
-      return lunar.year + '/' + lunar.month + '/' + lunar.day;
+      const _lunar = chineseLunar.solarToLunar(_dateTime);
+      return _lunar.year + '/' + _lunar.month + '/' + _lunar.day;
     } catch (err) {
       return '时间错误';
     }
   }
   // 解析生日信息
-  birthDay(idCard) {
-    const IdCard = idCard.toString()
-    // let birthday, month, day, nong, year, nongyear;
-    const year = IdCard.substr(6, 4);
-    const month = IdCard.substr(10, 2);
-    const day = IdCard.substr(12, 2);
-    const birthday = year + '/' + month + '/' + day;
-    const nong = this.Nong(birthday);
-    const nongYear = nong.substr(0, 4)
+  birthday(idCard) {
+    const IdCard = idCard.toString();
+    const _year = IdCard.substr(6, 4);
+    const _month = IdCard.substr(10, 2);
+    const _day = IdCard.substr(12, 2);
+    // 公历
+    const _gregorian = _year + '/' + _month + '/' + _day;
+    // 农历
+    const _lunar = this.lunarCalendar(_gregorian);
+    // 农历年
+    const _lunarYear = _lunar.substr(0, 4);
     return {
-      date: birthday,
-      nong: nong,
-      year: year,
-      month: month,
-      day: day,
-      week: this.week(year, month, day), // 星期几
-      zodiac: this.zodiac(month, day), // 星座
-      zodiac_zh: this.zodiac_zh(nongYear) // 生肖
+      gregorian: _gregorian,
+      lunar: _lunar,
+      year: _year,
+      month: _month,
+      day: _day,
+      week_zh: this.week_zh(_year, _month, _day), // 星期几
+      zodiac: this.zodiac(_month, _day), // 星座
+      zodiac_zh: this.zodiac_zh(_lunarYear) // 生肖
     };
   }
   // 验证身份证号是否正确
@@ -107,14 +116,14 @@ export default class JsIdCard {
   }
   // 补全身份证号
   repairIdCard(idCard) {
-    const IdCard = idCard.toString()
-    if (/(^\d{17}$)/.test(IdCard)) return IdCard + this.idCardEndNum(IdCard)
-    if (eReg.test(IdCard)) return IdCard.slice(0, 17) + this.idCardEndNum(IdCard)
+    const IdCard = idCard.toString();
+    if (/(^\d{17}$)/.test(IdCard)) return IdCard + this.idCardEndNum(IdCard);
+    if (eReg.test(IdCard)) return IdCard.slice(0, 17) + this.idCardEndNum(IdCard);
   }
   // 15位转换18位
   num15to18(idCard) {
-    const IdCard = idCard.toString()
-    if (/(^\d{15}$)/.test(IdCard)) return this.repairIdCard(IdCard.slice(0, 6) + '19' + IdCard.slice(6, 15))
+    const IdCard = idCard.toString();
+    if (/(^\d{15}$)/.test(IdCard)) return this.repairIdCard(IdCard.slice(0, 6) + '19' + IdCard.slice(6, 15));
   }
   /**
    * 地址信息解析
@@ -122,15 +131,21 @@ export default class JsIdCard {
    * @return {object} {"address": "地址","provinces": "省/直辖市","citiy": "市","areas": "县/区","all": "省-市-县"}
    **/
   address(idCard) {
-    const IdCard = idCard.toString();
-    const addressId = IdCard.slice(0, 6);
-    const data = dataAddress[addressId]
-    if (!data) {
-      console.warn('warning => ', '未找到匹配数据');
+    try {
+      const IdCard = idCard.toString();
+      const _addressId = IdCard.slice(0, 6);
+      const _addressItem = dataAddress[_addressId];
+      const { provinces, city, areas } = _addressItem;
+      if (!_addressItem) {
+        console.warn('warning => ', '未找到匹配数据');
+        return null
+      }
+      const _all = (provinces + '-' + city + '-' + areas).replace('无-', '');
+      return { ..._addressItem, _all }
+    } catch (e) {
+      console.warn(e);
       return null
     }
-    const all = (data.provinces + '-' + data.citiy + '-' + data.areas).replace('无', '');
-    return { ...data, all }
   }
   // 性别解析
   sex(idCard) {
@@ -140,5 +155,18 @@ export default class JsIdCard {
     }
     if (IdCard[16] % 2) return '男';
     return '女';
+  }
+  // 全部
+  all(idCard) {
+    return {
+      endNum: this.idCardEndNum(idCard),
+      birthDay: this.birthday(idCard),
+      checked: this.checkIdCard(idCard),
+      repairIdCard: this.repairIdCard(idCard),
+      num15to18: this.num15to18(idCard),
+      sex: this.sex(idCard),
+      address: this.address(idCard),
+      lunar: this.lunarCalendar(idCard)
+    }
   }
 }
