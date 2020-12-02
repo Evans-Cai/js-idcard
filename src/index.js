@@ -1,3 +1,5 @@
+'use strict';
+
 const NodeConstellation = require('node-constellation');
 const chineseLunar = require('chinese-lunar');
 //
