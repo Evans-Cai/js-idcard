@@ -148,7 +148,7 @@ class JsIdCardFull {
         return null
       }
       const _all = (provinces + '-' + city + '-' + areas).replace('无-', '');
-      return { ..._addressItem, _all }
+      return { ..._addressItem, all: _all }
     } catch (e) {
       console.warn(e);
       return null
