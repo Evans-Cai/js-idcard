@@ -5,7 +5,7 @@ const chineseLunar = require('chinese-lunar');
 //
 const dataAddress = require('../data/address.json');
 //
-const weekDay = require('./week');
+const { weekDay } = require('./week');
 // 身份证正则
 const { eReg, eReg15_0, eReg15_1, eReg18_0, eReg18_1 } = require('./regs');
 //

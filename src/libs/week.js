@@ -10,7 +10,9 @@ const day = {
   6: '星期天'
 }
 //
-export default function weekDay(year, month, date) {
-  const i = new Date(year, month - 1, date).getUTCDay();
-  return day[i]
+export default {
+  weekDay(year, month, date) {
+    const i = new Date(year, month - 1, date).getUTCDay();
+    return day[i]
+  }
 }
