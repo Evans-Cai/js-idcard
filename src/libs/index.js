@@ -1,13 +1,13 @@
 'use strict';
 
-const NodeConstellation = require('node-constellation');
-const chineseLunar = require('chinese-lunar');
+import NodeConstellation from 'node-constellation';
+import chineseLunar from 'chinese-lunar';
 //
-const dataAddress = require('../data/address.json');
+import dataAddress from '../data/address.json';
 //
-const { weekDay } = require('./week');
+import { weekDay }  from './week';
 // 身份证正则
-const { eReg, eReg15_0, eReg15_1, eReg18_0, eReg18_1 } = require('./regs');
+import { eReg, eReg15_0, eReg15_1, eReg18_0, eReg18_1 } from './regs';
 //
 class JsIdCardFull {
   /**
