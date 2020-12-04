@@ -1,13 +1,13 @@
 'use strict';
 
-import NodeConstellation from 'node-constellation';
-import chineseLunar from 'chinese-lunar';
+const NodeConstellation = require('node-constellation');
+const chineseLunar = require('chinese-lunar');
 //
-import dataAddress from '../data/address.json';
+const dataAddress = require('../data/address.json');
 //
-import { weekDay }  from './week';
+const { weekDay } = require('./week');
 // 身份证正则
-import { eReg, eReg15_0, eReg15_1, eReg18_0, eReg18_1 } from './regs';
+const { eReg, eReg15_0, eReg15_1, eReg18_0, eReg18_1 } = require('./regs');
 //
 class JsIdCardFull {
   /**
@@ -26,16 +26,16 @@ class JsIdCardFull {
   zodiac_zh(year) {
     const arr = '鼠牛虎兔龙蛇马羊猴鸡狗猪';
     let Year = year % 12 - 4;
-    if (Year < 0) Year += 12;
+    if (Year < 0) {Year += 12;}
     return arr[Year]
   }
   // 星座
   zodiac(month, day) {
     try {
-      if (month !== undefined && day !== undefined) return NodeConstellation(month, day, 'zh-cn')
+      if (month !== undefined && day !== undefined) {return NodeConstellation(month, day, 'zh-cn')}
       if (day === undefined && month !== undefined) {
-        if (month.length === 4) return NodeConstellation(month.substr(0, 2), month.substr(2, 2), 'zh-cn');
-        const _month = month.split(/[\/\\\-]/);
+        if (month.length === 4) {return NodeConstellation(month.substr(0, 2), month.substr(2, 2), 'zh-cn');}
+        const _month = month.split(/[/\\-]/);
         return NodeConstellation(_month[0], _month[1], 'zh-cn')
       }
     } catch (err) {
@@ -58,10 +58,14 @@ class JsIdCardFull {
     return parity[sum % 11];
   }
   // 农历转换
-  lunarCalendar(birthday) {
-    const _bir = birthday.split(/[\/\\\-]/);
-    const _birthday = _bir.slice(0, 4) + '/' + _bir.slice(4, 6) + '/' + _bir.slice(6, 8);
-    const _dateTime = new Date(_birthday);
+  lunarCalendar(idCard) {
+    const IdCard = idCard.toString();
+    const _year = IdCard.substr(6, 4);
+    const _month = IdCard.substr(10, 2);
+    const _day = IdCard.substr(12, 2);
+    // 公历
+    const _gregorian = _year + '/' + _month + '/' + _day;
+    const _dateTime = new Date(_gregorian);
     try {
       const _lunar = chineseLunar.solarToLunar(_dateTime);
       return _lunar.year + '/' + _lunar.month + '/' + _lunar.day;
@@ -79,7 +83,7 @@ class JsIdCardFull {
     // 公历
     const _gregorian = _year + '/' + _month + '/' + _day;
     // 农历
-    const _lunar = this.lunarCalendar(_gregorian);
+    const _lunar = this.lunarCalendar(idCard);
     // 农历年
     const _lunarYear = _lunar.substr(0, 4);
     return {
@@ -98,20 +102,20 @@ class JsIdCardFull {
     const IdCard = idCard.toString();
     let ereg = eReg;
     switch (IdCard.length) {
-      case 15:
-        if ((parseInt(IdCard.substr(6, 2)) + 1900) % 4 === 0 || ((parseInt(IdCard.substr(6, 2)) + 1900) % 100 === 0 && (parseInt(IdCard.substr(6, 2)) + 1900) % 4 === 0)) {
-          ereg = eReg15_0
-        } else {
-          ereg = eReg15_1
-        }
-        break;
-      case 18:
-        if (parseInt(IdCard.substr(6, 4)) % 4 === 0 || (parseInt(IdCard.substr(6, 4)) % 100 === 0 && parseInt(IdCard.substr(6, 4)) % 4 === 0)) {
-          ereg = eReg18_0
-        } else {
-          ereg = eReg18_1
-        }
-        break;
+    case 15:
+      if ((parseInt(IdCard.substr(6, 2)) + 1900) % 4 === 0 || ((parseInt(IdCard.substr(6, 2)) + 1900) % 100 === 0 && (parseInt(IdCard.substr(6, 2)) + 1900) % 4 === 0)) {
+        ereg = eReg15_0
+      } else {
+        ereg = eReg15_1
+      }
+      break;
+    case 18:
+      if (parseInt(IdCard.substr(6, 4)) % 4 === 0 || (parseInt(IdCard.substr(6, 4)) % 100 === 0 && parseInt(IdCard.substr(6, 4)) % 4 === 0)) {
+        ereg = eReg18_0
+      } else {
+        ereg = eReg18_1
+      }
+      break;
     }
     console.log(ereg.test(IdCard), IdCard[17]);
     console.log(this.idCardEndNum(IdCard));
@@ -120,13 +124,13 @@ class JsIdCardFull {
   // 补全身份证号
   repairIdCard(idCard) {
     const IdCard = idCard.toString();
-    if (/(^\d{17}$)/.test(IdCard)) return IdCard + this.idCardEndNum(IdCard);
-    if (eReg.test(IdCard)) return IdCard.slice(0, 17) + this.idCardEndNum(IdCard);
+    if (/(^\d{17}$)/.test(IdCard)) {return IdCard + this.idCardEndNum(IdCard);}
+    if (eReg.test(IdCard)) {return IdCard.slice(0, 17) + this.idCardEndNum(IdCard);}
   }
   // 15位转换18位
   num15to18(idCard) {
     const IdCard = idCard.toString();
-    if (/(^\d{15}$)/.test(IdCard)) return this.repairIdCard(IdCard.slice(0, 6) + '19' + IdCard.slice(6, 15));
+    if (/(^\d{15}$)/.test(IdCard)) {return this.repairIdCard(IdCard.slice(0, 6) + '19' + IdCard.slice(6, 15));} else {return null}
   }
   /**
    * 地址信息解析
@@ -156,7 +160,7 @@ class JsIdCardFull {
     if (IdCard.length === 15) {
       IdCard = this.num15to18(IdCard);
     }
-    if (IdCard[16] % 2) return '男';
+    if (IdCard[16] % 2) {return '男';}
     return '女';
   }
   // 全部

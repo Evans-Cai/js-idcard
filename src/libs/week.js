@@ -10,7 +10,10 @@ const day = {
   6: '星期天'
 }
 //
-export function weekDay(year, month, date) {
+function weekDay(year, month, date) {
   const i = new Date(year, month - 1, date).getUTCDay();
   return day[i]
+}
+module.exports = {
+  weekDay: weekDay
 }

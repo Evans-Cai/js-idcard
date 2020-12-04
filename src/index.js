@@ -1,2 +1,3 @@
-import JsIdCardFull from './libs'
-export default JsIdCardFull;
+// import JsIdCardFull from './libs'
+// export default JsIdCardFull;
+module.exports = require('./libs')

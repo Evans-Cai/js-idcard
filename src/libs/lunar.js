@@ -1,6 +1,6 @@
 const chineseLunar = require('chinese-lunar');
 function Lunar(birthday) {
-  const _bir = birthday.split(/[\/\\\-]/);
+  const _bir = birthday.split(/[/\\-]/);
   const _birthday = _bir.slice(0, 4) + '/' + _bir.slice(4, 6) + '/' + _bir.slice(6, 8)
   const _date = new Date(_birthday)
   let lunar
@@ -13,4 +13,6 @@ function Lunar(birthday) {
   }
 }
 
-export default Lunar
+module.exports = {
+  Lunar: Lunar
+}
