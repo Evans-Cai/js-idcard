@@ -5,14 +5,14 @@
 ###### yarn
 `yarn add js-idcard-full -S`
 ###### npm
-`npm install js-idcard-full -S`
+`npm install js-idcard-full -S` | `cnpm install js-idcard-full -S`
 
 ## 使用
 ```
 # require
 const IdCard = require('js-idcard-full') 
 # import
-import JsIdCardFull = require('js-idcard-full')
+import JsIdCardFull from 'js-idcard-full'
 ```
 
 ####方法列表
