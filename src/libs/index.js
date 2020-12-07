@@ -3,7 +3,7 @@
 const NodeConstellation = require('node-constellation');
 const chineseLunar = require('chinese-lunar');
 //
-const dataAddress = require('../data/address.json');
+const dataAddress = require('../static/address.json');
 //
 const { weekDay } = require('./week');
 // 身份证正则
@@ -17,6 +17,19 @@ class JsIdCardFull {
     if (idCard) {
       return this.all(idCard);
     }
+  }
+  //
+  formatDate(idCard) {
+    const y = this.checkIdCard(idCard);
+    if(!y){
+      const d = new Date();
+      return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`
+    }
+    const IdCard = idCard.toString();
+    const _year = IdCard.substr(6, 4);
+    const _month = IdCard.substr(10, 2);
+    const _day = IdCard.substr(12, 2);
+    return `${_year}-${_month}-${_day}`
   }
   // 星期
   week_zh(year, month, day) {
@@ -102,20 +115,20 @@ class JsIdCardFull {
     const IdCard = idCard.toString();
     let ereg = eReg;
     switch (IdCard.length) {
-    case 15:
-      if ((parseInt(IdCard.substr(6, 2)) + 1900) % 4 === 0 || ((parseInt(IdCard.substr(6, 2)) + 1900) % 100 === 0 && (parseInt(IdCard.substr(6, 2)) + 1900) % 4 === 0)) {
-        ereg = eReg15_0
-      } else {
-        ereg = eReg15_1
-      }
-      break;
-    case 18:
-      if (parseInt(IdCard.substr(6, 4)) % 4 === 0 || (parseInt(IdCard.substr(6, 4)) % 100 === 0 && parseInt(IdCard.substr(6, 4)) % 4 === 0)) {
-        ereg = eReg18_0
-      } else {
-        ereg = eReg18_1
-      }
-      break;
+      case 15:
+        if ((parseInt(IdCard.substr(6, 2)) + 1900) % 4 === 0 || ((parseInt(IdCard.substr(6, 2)) + 1900) % 100 === 0 && (parseInt(IdCard.substr(6, 2)) + 1900) % 4 === 0)) {
+          ereg = eReg15_0
+        } else {
+          ereg = eReg15_1
+        }
+        break;
+      case 18:
+        if (parseInt(IdCard.substr(6, 4)) % 4 === 0 || (parseInt(IdCard.substr(6, 4)) % 100 === 0 && parseInt(IdCard.substr(6, 4)) % 4 === 0)) {
+          ereg = eReg18_0
+        } else {
+          ereg = eReg18_1
+        }
+        break;
     }
     console.log(ereg.test(IdCard), IdCard[17]);
     console.log(this.idCardEndNum(IdCard));
@@ -163,6 +176,70 @@ class JsIdCardFull {
     if (IdCard[16] % 2) {return '男';}
     return '女';
   }
+  //
+  getAddress_zh(idCard){
+    try {
+      const IdCard = idCard.toString();
+      const _addressId = IdCard.slice(0, 6);
+      const _addressItem = dataAddress[_addressId];
+      const { provinces, city, areas } = _addressItem;
+      if (!_addressItem) {
+        console.warn('warning => ', '未找到匹配数据');
+        return null
+      }
+      const _all = (provinces + '-' + city + '-' + areas).replace('无-', '');
+      return { ..._addressItem, all: _all }
+    } catch (e) {
+      console.warn(e);
+      return null
+    }
+  }
+  // 性别解析
+  getSex(idCard) {
+    let IdCard = idCard.toString();
+    if (IdCard.length === 15) {
+      IdCard = this.num15to18(IdCard);
+    }
+    if (IdCard[16] % 2) {return '男';}
+    return '女';
+  }
+  // 年龄
+  getAge(idCard) {
+    let returnAge
+    const IdCard = idCard.toString();
+    const _year = Number(IdCard.substr(6, 4));
+    const _month = Number(IdCard.substr(10, 2));
+    const _day = Number(IdCard.substr(12, 2));
+    const d = new Date();
+    const nowYear = d.getFullYear();
+    const nowMonth = d.getMonth() + 1;
+    const nowDay = d.getDate();
+    if (nowYear === _year) {
+      returnAge = 0;//同年 则为0岁
+    } else {
+      const ageDiff = nowYear - _year  // 年之差
+      if (ageDiff > 0) {
+        if (nowMonth === _month) {
+          const dayDiff = nowDay - _day // 日之差
+          if (dayDiff < 0) {
+            returnAge = ageDiff - 1;
+          } else {
+            returnAge = ageDiff;
+          }
+        } else {
+          const monthDiff = nowMonth - _month // 月之差
+          if (monthDiff < 0) {
+            returnAge = ageDiff - 1;
+          } else {
+            returnAge = ageDiff;
+          }
+        }
+      } else {
+        returnAge = -1; // 返回-1 表示出生日期输入错误 晚于今天
+      }
+    }
+    return returnAge; // 返回周岁年龄
+  }
   // 全部
   all(idCard) {
     return {
@@ -171,10 +248,11 @@ class JsIdCardFull {
       checked: this.checkIdCard(idCard),
       repairIdCard: this.repairIdCard(idCard),
       num15to18: this.num15to18(idCard),
-      sex: this.sex(idCard),
-      address_zh: this.address_zh(idCard),
+      sex: this.getSex(idCard),
+      age: this.getAge(idCard),
+      address_zh: this.getAddress_zh(idCard),
       lunar: this.lunarCalendar(idCard)
     }
   }
 }
-export default JsIdCardFull
+module.exports = JsIdCardFull

@@ -10,7 +10,7 @@
 ## 使用
 ```
 # require
-const IdCard = require('js-idcard-full') 
+const JsIdCardFull = require('js-idcard-full') 
 # import
 import JsIdCardFull from 'js-idcard-full'
 ```
@@ -78,7 +78,6 @@ import JsIdCardFull from 'js-idcard-full'
 ### IdCard.num15to18(IdCard)
 返回15位转换18位后的身份证号码
 
-
 ##### 参数说明
 - @param {String} IdCard 身份证号码 15位
 
@@ -87,7 +86,16 @@ import JsIdCardFull from 'js-idcard-full'
 
 ---
 
-### IdCard.sex(IdCard)
+### IdCard.getAge(IdCard)
+返回周岁年龄
+##### 参数说明
+- @param {String} IdCard 身份证号码
+##### 返回数据
+`{Number}年龄`
+
+---
+
+### IdCard.sex(IdCard) || IdCard.getSex(IdCard)
 返回性别 男或女
 ##### 参数说明
 - @param {String} IdCard 身份证号码
@@ -96,7 +104,7 @@ import JsIdCardFull from 'js-idcard-full'
 
 ---
 
-### IdCard.nong(date)
+### IdCard.lunarCalendar(idCard)
 返回性别 农历日期
 ##### 参数说明
 - @param {String} date 日期 2016/01/01
@@ -148,6 +156,7 @@ return {
     areas: '平谷县',
     all: '北京市-平谷县'
   },
-  sex: '男'
+  sex: '男', // {string} 性别
+  age: 18 // {number} 年龄
 }
 ```
