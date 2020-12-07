@@ -1,6 +1,6 @@
 {
   "name": "js-idcard-full",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "description": "身份证解析",
   "main": "./src/index.js",
   "dependencies": {
